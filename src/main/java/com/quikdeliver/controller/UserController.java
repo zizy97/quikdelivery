@@ -64,27 +64,6 @@ public class UserController {
 
     @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        String authorization = request.getHeader(AUTHORIZATION);
-//        if( authorization != null && authorization.startsWith("Bearer ")){
-//            try {
-//                String refreshToken = authorization.substring("Bearer ".length());
-//                String userEmail = jwtHandler.getUserEmail();
-//                User user = userService.getUser(userEmail);
-//                Map<String,String > tokens = jwtHandler.buildNewToken(TokensType.ACCESS,user.getEmail(),request.getRequestURL().toString(),user.getRoles());
-//                tokens.put("refresh", refreshToken);
-//                response.setContentType(APPLICATION_JSON_VALUE); // Content type
-//                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-//            }catch (Exception e){
-//                log.error("Error logging in: {}", e.getMessage());
-//                response.setHeader("error", e.getMessage());
-//                response.setStatus(FORBIDDEN.value());
-//                Map<String,String> error = Map.of("error", e.getMessage());
-//                error.put("error", e.getMessage());
-//                new ObjectMapper().writeValue(response.getOutputStream(), error);
-//            }
-//        }else{
-//            throw new RuntimeException("Refresh token is missing");
-//        }
         String refreshToken = jwtHandler.getToken();
         if(refreshToken != null){
                 try{

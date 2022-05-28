@@ -35,18 +35,6 @@ public class CustomerController {
         }
     }
 
-//    @PostMapping("/add")
-//    public ResponseEntity<?> addCustomer(@RequestBody Customer customer) {
-//        if(!customerService.isCustomerExist(customer.getNic())) {
-//            log.info("Customer added");
-//            return new ResponseEntity<>(customerService.saveCustomer(customer), HttpStatus.OK);
-//        }else{
-//            log.error("Customer Already registered to the system");
-//            return new ResponseEntity<>(
-//                    new APIError().addCommonError("Customer Already registered to the system"),HttpStatus.CONFLICT);
-//        }
-//    }
-
     @PutMapping("/{id}/update")
     public ResponseEntity<?> updateCustomer(@RequestBody Customer customer, @PathVariable Long id) {
         if(customer.getId() == id) {

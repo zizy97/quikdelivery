@@ -30,17 +30,6 @@ public class DriverController {
         }
     }
 
-//    @PostMapping("/add")
-//    public ResponseEntity<?> addDriver(@RequestBody Driver driver) {
-//        if(!driverService.isDriverExist(driver.getNic())) {
-//            return new ResponseEntity<>(driverService.saveDriver(driver), HttpStatus.OK);
-//        }else{
-//            return new ResponseEntity<>(
-//                    new APIError().addCommonError("Driver Already registered to the system"),HttpStatus.CONFLICT);
-//        }
-//
-//    }
-
     @PutMapping("/{id}/update")
     public ResponseEntity<?> updateDriver(@RequestBody Driver driver, @PathVariable Long id) {
         if(driver.getId() == id) {
