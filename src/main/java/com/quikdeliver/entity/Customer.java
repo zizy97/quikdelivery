@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +15,9 @@ import java.util.Set;
 @Table(name = "customers")
 public class Customer extends User {
 
+    public Customer(String email, String password, String name, Collection<Role> roles){
+        super(email,password,name,roles);
+    }
     @JsonIgnore
     @OneToMany(mappedBy = "customer", orphanRemoval = true, cascade=CascadeType.ALL)
     private Set<PackageDeliveryRequest> deliverBookings = new HashSet<>();

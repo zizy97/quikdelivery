@@ -33,25 +33,16 @@ public class QuikdeliverApplication {
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-//	@Bean
-//	CommandLineRunner run(UserService userService){
-//		return args -> {
-//			userService.saveRole(new Role(null,"ROLE_ADMIN"));
-//			userService.saveRole(new Role(null,"ROLE_VO"));
-//			userService.saveRole(new Role(null,"ROLE_DRIVER"));
-//			userService.saveRole(new Role(null,"ROLE_USER"));
-//
-//			userService.saveUser(new User(null,"abc@gmail.com","pass123",new ArrayList<>()));
-//			userService.saveUser(new User(null,"def@gmail.com","pass123",new ArrayList<>()));
-//			userService.saveUser(new User(null,"ghi@gmail.com","pass123",new ArrayList<>()));
-//
-//
-//			userService.addRoleToUser("abc@gmail.com","ROLE_ADMIN");
-//			userService.addRoleToUser("abc@gmail.com","ROLE_VO");
-//			userService.addRoleToUser("def@gmail.com","ROLE_VO");
-//			userService.addRoleToUser("ghi@gmail.com","ROLE_DRIVER");
-//			userService.addRoleToUser("ghi@gmail.com","ROLE_USER");
-//		};
-//	}
+	@Bean
+	CommandLineRunner run(UserService userService){
+		return args -> {
+			if(!userService.isRolesSet()){
+				userService.saveRole(new Role(null,"ROLE_ADMIN"));
+				userService.saveRole(new Role(null,"ROLE_VO"));
+				userService.saveRole(new Role(null,"ROLE_DRIVER"));
+				userService.saveRole(new Role(null,"ROLE_CUSTOMER"));
+			}
+		};
+	}
 
 }

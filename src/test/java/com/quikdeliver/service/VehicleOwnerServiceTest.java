@@ -12,12 +12,10 @@ import javax.transaction.Transactional;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class VehicleOwnerServiceTest {
     @Autowired
-    VehicleOwnerService vehicleOwnerService;
+    VOServiceImpl VOServiceImpl;
     @Test
     void getAllVO() {
     }
@@ -32,8 +30,7 @@ class VehicleOwnerServiceTest {
         vo.setNic("Nadun");
         vo.setPassword("456");
         vo.setEmail("def@gmail.com");
-        vo.setPhone("0771234567");
-        vehicleOwnerService.addVO(vo);
+        VOServiceImpl.saveVO(vo);
     }
 
     @Test
@@ -49,34 +46,34 @@ class VehicleOwnerServiceTest {
         Vehicle v = new Vehicle();
         v.setType(VehicleType.TWO_TON_VAN);
         v.setModel("Audi");
-        vehicleOwnerService.addVehicleToVO(1L,v);
+        VOServiceImpl.addVehicleToVO(1L,v);
     }
 
     @Test
     @Transactional
     void updateVehicle() {
-        Vehicle vehicleByVO = vehicleOwnerService.getVehicleByVO(1L, 1L);
+        Vehicle vehicleByVO = VOServiceImpl.getVehicleByVO(1L, 1L);
         vehicleByVO.setModel("KDH");
-        vehicleOwnerService.updateVehicle(vehicleByVO,1L,1L);
+        VOServiceImpl.updateVehicle(vehicleByVO,1L,1L);
 
     }
 
     @Test
     void deleteVehicle() {
-        vehicleOwnerService.deleteVehicle(1L,1L);
+        VOServiceImpl.deleteVehicle(1L,1L);
     }
 
     @Test
     @Transactional
     void getVehiclesByVO() {
-        Set<Vehicle> vehiclesByVO = vehicleOwnerService.getVehiclesByVO(1L);
+        Set<Vehicle> vehiclesByVO = VOServiceImpl.getVehiclesByVO(1L);
         //vehiclesByVO.stream().map(v->v.getVehicleMake()).forEach(System.out::println);
 
     }
 
     @Test
     void assignDriver() {
-        vehicleOwnerService.assignDriver(1L,3L);
+        VOServiceImpl.assignDriver(1L,3L);
     }
 
     @Test
@@ -85,12 +82,11 @@ class VehicleOwnerServiceTest {
         driver.setNic("Supun");
         driver.setPassword("123");
         driver.setEmail("abc@gmail.com");
-        driver.setPhone("0771234567");
-        vehicleOwnerService.addDriverToVO(1L,driver);
+        VOServiceImpl.addDriverToVO(1L,driver);
     }
 
     @Test
     void assignVehicle() {
-        vehicleOwnerService.assignVehicle(1L,1L);
+        VOServiceImpl.assignVehicle(1L,1L);
     }
 }

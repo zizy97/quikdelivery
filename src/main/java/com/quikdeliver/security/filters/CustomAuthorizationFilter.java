@@ -29,7 +29,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter{
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("in the doFilterInternal");
-        if(request.getRequestURI().equals("/api/auth/login") || request.getRequestURI().equals("/api/auth/token/refresh")|| request.getRequestURI().equals("/api/auth/whoami")){
+        if(request.getRequestURI().equals("/api/auth/login") || request.getRequestURI().equals("/api/auth/token/refresh")|| request.getRequestURI().equals("/api/auth/whoami") || request.getRequestURI().equals("/api/auth/signup")){
             filterChain.doFilter(request, response);
         }else{
             String token = jwtHandler.getToken();

@@ -1,56 +1,23 @@
 package com.quikdeliver.service;
 
 import com.quikdeliver.entity.Driver;
-import com.quikdeliver.repository.DriverRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
-@Service
-public class DriverService {
-    @Autowired
-    DriverRepository driverRepository;
+public interface DriverService {
+    //Driver Read services
+    public Driver getDriver(Long id);
+    public Driver getDriver(String email);
+    public List<Driver> getAllDrivers();
+    public boolean isDriverExist(Long id);
+    public boolean isDriverExist(String email);
 
-    private Driver updateDriver=null;
+    //Driver create services
+    public Driver saveDriver(Driver driver);
 
-    public List<Driver> getAllDriver() {
-        return driverRepository.findAll();
-    }
+    //Driver update services
+    public void updateDriver(Driver user,Long id);
 
-    public Driver getDriverById(Long id) {
-        return driverRepository.findById(id).get();
-    }
-
-    public Driver addDriver(Driver driver) {
-        return driverRepository.save(driver);
-    }
-
-    @Transactional
-    public Driver updateDriver(Driver driver,Long id) {
-        driverRepository.findById(id).ifPresent(c -> {
-            c.setFirstName(driver.getFirstName());
-            c.setLastName(driver.getLastName());
-            c.setPhone(driver.getPhone());
-            updateDriver =driverRepository.save(c);
-        } );
-        return updateDriver;
-    }
-
-    @Transactional
-    public void deleteDriver(Long id) {
-        driverRepository.findById(id).ifPresent(c -> {
-            c.setDeleted(true);
-            driverRepository.save(c);
-        } );
-    }
-
-    public boolean isDriverExists(Long id) {
-        return driverRepository.existsById(id) && !driverRepository.findById(id).get().isDeleted();
-    }
-
-    public boolean isDriverExists(String nic) {
-        return driverRepository.existsDriverByNic(nic) && !driverRepository.findDriverByNic(nic).isDeleted();
-    }
+    //customer delete services
+    public void deleteDriver(Long id);
 }

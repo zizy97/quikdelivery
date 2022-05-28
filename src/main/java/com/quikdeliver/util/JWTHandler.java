@@ -44,6 +44,7 @@ public class JWTHandler {
         return jwt;
     }
 
+
     public String getToken() {
         String authorization = request.getHeader(AUTHORIZATION);
         if (authorization != null && authorization.startsWith(jwtConfig.getTokenPrefix())) {

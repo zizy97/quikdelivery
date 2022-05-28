@@ -14,12 +14,12 @@ class CustomerServiceTest {
 
     @Test
     void getAllCustomer() {
-        customerService.getAllCustomer().stream().forEach(e->System.out.println(e.getId()));
+        customerService.getAllCustomers().stream().forEach(e->System.out.println(e.getId()));
     }
 
     @Test
     void getCustomerById() {
-        System.out.println(customerService.getCustomerById(1L).getId());
+        System.out.println(customerService.getCustomer(1L).getId());
     }
 
     @Test
@@ -28,16 +28,14 @@ class CustomerServiceTest {
         customer.setNic("Supun");
         customer.setPassword("123");
         customer.setEmail("abc@gmail.com");
-        customer.setPhone("0771234567");
 
-        customerService.addCustomer(customer);
+        customerService.saveCustomer(customer);
     }
 
     @Test
     void updateCustomer() {
-        Customer customer = customerService.getCustomerById(1L);
-        customer.setFirstName("Supun");
-        customer.setLastName("Wijegunawardhana");
+        Customer customer = customerService.getCustomer(1L);
+        customer.setName("Supun");
         customerService.updateCustomer(customer, 1L);
     }
 
@@ -51,7 +49,6 @@ class CustomerServiceTest {
         PackageDeliveryRequest packageDeliveryRequest = new PackageDeliveryRequest();
         packageDeliveryRequest.setPickupAddress("Kandy");
         packageDeliveryRequest.setDropOffAddress("Colombo");
-
-        customerService.addDeliverBooking(packageDeliveryRequest, 2L);
+        //customerService.addDeliverBooking(packageDeliveryRequest, 2L);
     }
 }

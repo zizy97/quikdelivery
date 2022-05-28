@@ -12,4 +12,6 @@ public interface UserService {
     public List<User> getAllUsers();
     public Role saveRole(Role role);
     public void addRoleToUser(String username, String role);
+    public Role getRole(String name);
+    public boolean isRolesSet();
 }

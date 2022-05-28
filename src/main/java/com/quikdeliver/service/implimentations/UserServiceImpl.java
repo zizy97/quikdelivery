@@ -1,17 +1,17 @@
-package com.quikdeliver.service;
+package com.quikdeliver.service.implimentations;
 
 import com.quikdeliver.entity.Role;
 import com.quikdeliver.entity.User;
 import com.quikdeliver.repository.RoleRepository;
 import com.quikdeliver.repository.UserRepository;
+import com.quikdeliver.security.UserPrincipal;
+import com.quikdeliver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,11 +31,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (user == null) {
             log.error("User with email-{} not found",email);
             throw new UsernameNotFoundException("User with email- " + email + " not found");
-        }else{
-            log.info("User with email-{} found",email);
         }
-        List<SimpleGrantedAuthority> authorities= user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),authorities);
+        log.info("User with email-{} found",email);
+
+        return UserPrincipal.create(user);
     }
 
     @Override
@@ -73,6 +72,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Role role = roleRepository.findRoleByName(roleName);
         user.getRoles().add(role);
         log.info("Adding new role-{} to email-{}",roleName,email);
+    }
+
+    @Override
+    public Role getRole(String name) {
+        return roleRepository.findRoleByName(name);
+    }
+
+    @Override
+    public boolean isRolesSet() {
+        return roleRepository.count()==4;
     }
 
 }

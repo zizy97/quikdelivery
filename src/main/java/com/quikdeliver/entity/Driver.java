@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,4 +35,8 @@ public class Driver extends User {
     @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Allocation> allocations;
+
+    public Driver(String email, String password, String name, Collection<Role> roles){
+        super(email,password,name,roles);
+    }
 }

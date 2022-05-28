@@ -1,10 +1,16 @@
 package com.quikdeliver.security;
 
+import com.quikdeliver.model.GoogleAuthRequest;
 import com.quikdeliver.security.filters.CustomAuthenticationFilter;
 import com.quikdeliver.security.filters.CustomAuthorizationFilter;
+import com.quikdeliver.security.oauth2.CustomOAuth2UserService;
+import com.quikdeliver.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.quikdeliver.security.oauth2.OAuth2AuthenticationFailureHandler;
+import com.quikdeliver.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import com.quikdeliver.util.JWTHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JWTHandler jwtHandler;
+    private  final GoogleAuthRequest authRequest;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -41,12 +51,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean(),jwtHandler);
         customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");//change the default login url
 
-        http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http
+                .cors()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .csrf().disable()
+                .formLogin().disable()
+                .httpBasic().disable();
+        http.authorizeRequests().antMatchers("/api/oauth2/**").permitAll();
         http.authorizeRequests().antMatchers(GET,"/","/api/auth/token/refresh","/api/auth/whoami").permitAll();
+        http.authorizeRequests().antMatchers(POST,"/api/auth/signup").permitAll();
         http.authorizeRequests().antMatchers(GET,"/api/user/**").hasAnyAuthority("ROLE_USER", "ROLE_VO");
         http.authorizeRequests().antMatchers(POST,"/api/user/**").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().anyRequest().authenticated();
+
+        http
+                .oauth2Login()
+                .authorizationEndpoint()
+                .baseUri("/api/oauth2/authorize")
+                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+                .and()
+                .redirectionEndpoint()
+                .baseUri("/api/oauth2/callback/*")
+                .and()
+                .userInfoEndpoint()
+                .userService(customOAuth2UserService)
+                .and()
+                .successHandler(oAuth2AuthenticationSuccessHandler)
+                .failureHandler(oAuth2AuthenticationFailureHandler);
+
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(jwtHandler), UsernamePasswordAuthenticationFilter.class);
     }
@@ -55,5 +90,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+        return new HttpCookieOAuth2AuthorizationRequestRepository(authRequest);
     }
 }

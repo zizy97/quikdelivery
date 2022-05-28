@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,10 @@ public class VehicleOwner extends User {
 
     @Column(columnDefinition = "boolean default false")
     private boolean isVerified;
+
+    public VehicleOwner(String email, String password, String name, Collection<Role> roles){
+        super(email,password,name,roles);
+    }
 
     public void addVehicle(Vehicle vehicle){
         vehicle.setVehicleOwner(this);

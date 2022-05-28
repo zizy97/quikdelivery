@@ -1,10 +1,12 @@
 package com.quikdeliver.entity;
 
-import com.sun.istack.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.quikdeliver.model.AuthProvider;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -18,26 +20,44 @@ uniqueConstraints = {
 })
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    public User(Long id, String email, String password, Collection<Role> roles) {
+    public User(String email, String password, Collection<Role> roles) {
         this.id = id;
         this.password = password;
         this.email = email;
         this.roles = roles;
     }
 
-    @NotNull
-    private String nic;
+    public User( String email, String password, String name, Collection<Role> roles) {
+        this.password = password;
+        this.name=name;
+        this.email = email;
+        this.roles = roles;
+    }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+
+    @JsonIgnore
     private String password;
-    private String firstName;
-    private String lastName;
+
+    @Column(nullable = false)
+    private String name;
+
     private String email;
 
-    private String phone;
+    private String imageUrl;
+
+    @Column(nullable = false)
+    private Boolean emailVerified = false;
+
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
+    private String providerId;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -52,4 +72,7 @@ public class User {
 
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
+
+    //todo:need to delete
+    private String nic;
 }
