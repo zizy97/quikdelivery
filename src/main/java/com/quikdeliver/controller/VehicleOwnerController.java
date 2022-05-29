@@ -9,9 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
+
 @RestController
 @RequestMapping("api/vehicle-owner")
 @RequiredArgsConstructor
+@RolesAllowed("ROLE_VO")
 public class VehicleOwnerController {
 
     private final VOService voService;

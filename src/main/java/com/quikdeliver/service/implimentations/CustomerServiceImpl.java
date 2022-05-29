@@ -5,11 +5,13 @@ import com.quikdeliver.entity.PackageDeliveryRequest;
 import com.quikdeliver.repository.CustomerRepository;
 import com.quikdeliver.service.CustomerService;
 import com.quikdeliver.service.DeliverBookingService;
+import com.quikdeliver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.List;
 
 @Service @RequiredArgsConstructor
@@ -18,6 +20,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
     private final DeliverBookingService deliverBookingService;
+    private final UserService userService;
 
     public PackageDeliveryRequest addDeliverBooking(PackageDeliveryRequest deliverBooking, Long id) {
         customerRepository.findById(id).ifPresent(c -> {
@@ -58,6 +61,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer saveCustomer(Customer customer) {
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        customer.setRoles(Arrays.asList(userService.getRole("ROLE_CUSTOMER")));
         return customerRepository.save(customer);
     }
 

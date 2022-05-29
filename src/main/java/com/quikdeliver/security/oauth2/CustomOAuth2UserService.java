@@ -5,9 +5,10 @@ import com.quikdeliver.entity.User;
 import com.quikdeliver.model.AuthProvider;
 import com.quikdeliver.model.GoogleAuthRequest;
 import com.quikdeliver.repository.UserRepository;
-import com.quikdeliver.security.UserPrincipal;
+import com.quikdeliver.model.UserPrincipal;
 import com.quikdeliver.security.oauth2.user.OAuth2UserInfo;
 import com.quikdeliver.security.oauth2.user.OAuth2UserInfoFactory;
+import com.quikdeliver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -25,6 +26,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
     private final GoogleAuthRequest authRequest;
+    private final UserService userService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) {
@@ -47,19 +49,21 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if(StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
-
         Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
         User user;
-        if(userOptional.isPresent()) {
-            user = userOptional.get();
-            if(!user.getProvider().equals(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {
-                throw new OAuth2AuthenticationProcessingException("Looks like you're signed up with " +
-                        user.getProvider() + " account. Please use your " + user.getProvider() +
-                        " account to login.");
-            }
-            user = updateExistingUser(user, oAuth2UserInfo);
-        } else {
+
+        if(authRequest.getReqType().equals("signup") && !userOptional.isPresent()) {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
+        }else if(authRequest.getReqType().equals("signup") && userOptional.isPresent()){
+            log.error("Mail already signup");
+            throw new OAuth2AuthenticationProcessingException(String.format("Your email-%s already signup with this service",oAuth2UserInfo.getEmail()));
+        }else if(authRequest.getReqType().equals("login") && userOptional.isPresent()) {
+            user = userOptional.get();
+        }else if(!authRequest.getReqType().equals("login") && !userOptional.isPresent()){
+            user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
+        }else{
+            log.error("Invalid req arguments for google oauth request");
+            throw new OAuth2AuthenticationProcessingException("Invalid req arguments for google oauth request");
         }
 
         return UserPrincipal.create(user, oAuth2User.getAttributes());
@@ -68,13 +72,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
         log.info("registerNewUser -DefaultOAuth2UserService");
         User user = new User();
-
         user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
         user.setProviderId(oAuth2UserInfo.getId());
         user.setName(oAuth2UserInfo.getName());
         user.setEmail(oAuth2UserInfo.getEmail());
         user.setImageUrl(oAuth2UserInfo.getImageUrl());
-        return userRepository.save(user);
+        User save = userRepository.save(user);
+        userService.addRoleToUser(save.getEmail(), authRequest.getUserType());
+        authRequest.setUser(userRepository.findByEmail(user.getEmail()).get());// update user to global
+        return save;
     }
 
     private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {

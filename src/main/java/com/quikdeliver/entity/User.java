@@ -2,6 +2,8 @@ package com.quikdeliver.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quikdeliver.model.AuthProvider;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,11 +29,12 @@ public class User {
         this.roles = roles;
     }
 
-    public User( String email, String password, String name, Collection<Role> roles) {
+    public User( String email, String password, String name, Collection<Role> roles,AuthProvider provider) {
         this.password = password;
         this.name=name;
         this.email = email;
         this.roles = roles;
+        this.provider=provider;
     }
 
     @Id

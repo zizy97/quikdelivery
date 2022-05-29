@@ -9,10 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
+
 @RestController
 @RequestMapping("api/customer")
 @Slf4j
 @RequiredArgsConstructor
+@RolesAllowed("ROLE_CUSTOMER")
 public class CustomerController {
 
     private final CustomerService customerService;

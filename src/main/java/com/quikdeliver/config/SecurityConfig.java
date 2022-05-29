@@ -1,6 +1,7 @@
-package com.quikdeliver.security;
+package com.quikdeliver.config;
 
 import com.quikdeliver.model.GoogleAuthRequest;
+import com.quikdeliver.security.RestAuthenticationEntryPoint;
 import com.quikdeliver.security.filters.CustomAuthenticationFilter;
 import com.quikdeliver.security.filters.CustomAuthorizationFilter;
 import com.quikdeliver.security.oauth2.CustomOAuth2UserService;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -26,7 +28,9 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
-@EnableWebSecurity @RequiredArgsConstructor
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true,jsr250Enabled = true)
+@RequiredArgsConstructor
 @Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -40,13 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        log.info("in the auth configure");
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        log.info("in the http configure");
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean(),jwtHandler);
         customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");//change the default login url
 
@@ -58,15 +60,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .formLogin().disable()
-                .httpBasic().disable();
-        http.authorizeRequests().antMatchers("/api/oauth2/**").permitAll();
-        http.authorizeRequests().antMatchers(GET,"/","/api/auth/token/refresh","/api/auth/whoami","/file").permitAll();
-        http.authorizeRequests().antMatchers(POST,"/api/auth/signup").permitAll();
-        http.authorizeRequests().antMatchers(GET,"/api/user/**").hasAnyAuthority("ROLE_USER", "ROLE_VO");
-        http.authorizeRequests().antMatchers(POST,"/api/user/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().anyRequest().authenticated();
-
-        http
+                .httpBasic().disable()
+                .exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .and()
+                .authorizeRequests()
+                .antMatchers("/",
+//                        "/error",
+                        "/favicon.ico",
+                        "/**/*.png",
+                        "/**/*.gif",
+                        "/**/*.svg",
+                        "/**/*.jpg",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js").permitAll()
+                .antMatchers( "/api/oauth2/**").permitAll()
+                .antMatchers(POST,"/api/auth/signup").permitAll()
+                .antMatchers("/api/auth/login").permitAll()
+                .antMatchers(GET,"/","/api/auth/token/refresh","/api/auth/whoami","/file").permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
                 .oauth2Login()
                 .authorizationEndpoint()
                 .baseUri("/api/oauth2/authorize")
@@ -81,6 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(oAuth2AuthenticationSuccessHandler)
                 .failureHandler(oAuth2AuthenticationFailureHandler);
 
+        // Add our custom Token based authentication filter
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(jwtHandler), UsernamePasswordAuthenticationFilter.class);
     }

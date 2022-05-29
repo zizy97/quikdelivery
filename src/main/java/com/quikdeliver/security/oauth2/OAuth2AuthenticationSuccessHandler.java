@@ -3,8 +3,9 @@ package com.quikdeliver.security.oauth2;
 import com.quikdeliver.advice.exception.BadRequestException;
 import com.quikdeliver.config.AppProperties;
 import com.quikdeliver.entity.Role;
+import com.quikdeliver.model.GoogleAuthRequest;
 import com.quikdeliver.model.TokensType;
-import com.quikdeliver.security.UserPrincipal;
+import com.quikdeliver.model.UserPrincipal;
 import com.quikdeliver.utility.CookieUtils;
 import com.quikdeliver.utility.JWTHandler;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import static com.quikdeliver.security.oauth2.HttpCookieOAuth2AuthorizationReque
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JWTHandler jwtHandler;
     private final AppProperties appProperties;
+    private final GoogleAuthRequest authRequest;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
 
@@ -60,11 +62,14 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 //        String targetUrl = "http://localhost:3000/oauth2/redirect";
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        List<Role> roles = userPrincipal.getAuthorities().stream().map(g -> new Role(g.getAuthority())).collect(Collectors.toList());
-        Map<String,String> tokens= jwtHandler.buildNewToken(TokensType.ACCESS,userPrincipal.getUsername(),request.getRequestURL().toString(),roles);
+//        List<Role> roles = userPrincipal.getAuthorities().stream().map(g -> new Role(g.getAuthority())).collect(Collectors.toList());
+        List<Role> roles = authRequest.getUser().getRoles().stream().map(role -> new Role(role.getName())).collect(Collectors.toList());
+        Map<String,String> tokens= jwtHandler.buildNewToken(TokensType.BOTH,userPrincipal.getUsername(),request.getRequestURL().toString(),roles);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", tokens.get("access"))
+                .queryParam("access", tokens.get("access"))
+                .queryParam("refresh",tokens.get("refresh"))
+                .queryParam("userId",userPrincipal.getUsername())
                 .build().toUriString();
     }
 

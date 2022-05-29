@@ -3,6 +3,7 @@ package com.quikdeliver.security.filters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quikdeliver.entity.Role;
 import com.quikdeliver.model.TokensType;
+import com.quikdeliver.model.UserPrincipal;
 import com.quikdeliver.utility.JWTHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -53,7 +53,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
         log.info("in the successfulAuthentication");
-        User user = (User) authentication.getPrincipal();
+        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
         List<Role> roles = user.getAuthorities().stream().map(g -> new Role(g.getAuthority())).collect(Collectors.toList());
 
         Map<String,String> tokens =

@@ -1,6 +1,9 @@
 package com.quikdeliver.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.quikdeliver.model.AuthProvider;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -36,7 +39,7 @@ public class Driver extends User {
     @JsonIgnore
     private List<Allocation> allocations;
 
-    public Driver(String email, String password, String name, Collection<Role> roles){
-        super(email,password,name,roles);
+    public Driver(String email, String password, String name, Collection<Role> roles, AuthProvider provider){
+        super(email,password,name,roles,provider);
     }
 }

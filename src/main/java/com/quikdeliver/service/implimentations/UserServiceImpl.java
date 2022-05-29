@@ -1,10 +1,8 @@
 package com.quikdeliver.service.implimentations;
 
-import com.quikdeliver.entity.Role;
-import com.quikdeliver.entity.User;
-import com.quikdeliver.repository.RoleRepository;
-import com.quikdeliver.repository.UserRepository;
-import com.quikdeliver.security.UserPrincipal;
+import com.quikdeliver.entity.*;
+import com.quikdeliver.repository.*;
+import com.quikdeliver.model.UserPrincipal;
 import com.quikdeliver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +18,9 @@ import java.util.List;
 @Service @RequiredArgsConstructor @Transactional @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
+    private final DriverRepository driverRepository;
+    private final VORepository voRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -47,6 +48,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public boolean isUser(String email) {
+        return userRepository.existsUserByEmail(email);
+    }
+
+    @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -55,6 +61,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User saveUser(User user) {
         log.info("Saving new user to database");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User saveUser(User user,String type) {
+        log.info("Saving new user to database");
         return userRepository.save(user);
     }
 
@@ -69,6 +81,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findByEmail(email).get();
         Role role = roleRepository.findRoleByName(roleName);
         user.getRoles().add(role);
+        switch (roleName){
+            case "ROLE_CUSTOMER":
+                customerRepository.updateNewRecord(user.getId());
+                break;
+            case "ROLE_DRIVER":
+                driverRepository.updateNewRecord(user.getId());
+                break;
+            case "ROLE_VO":
+                voRepository.updateNewRecord(user.getId());
+                break;
+        }
         log.info("Adding new role-{} to email-{}",roleName,email);
     }
 

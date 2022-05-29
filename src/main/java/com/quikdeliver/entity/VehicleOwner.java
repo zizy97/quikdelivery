@@ -1,6 +1,9 @@
 package com.quikdeliver.entity;
 
 import com.fasterxml.jackson.annotation.*;
+import com.quikdeliver.model.AuthProvider;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,8 +32,8 @@ public class VehicleOwner extends User {
     @Column(columnDefinition = "boolean default false")
     private boolean isVerified;
 
-    public VehicleOwner(String email, String password, String name, Collection<Role> roles){
-        super(email,password,name,roles);
+    public VehicleOwner(String email, String password, String name, Collection<Role> roles, AuthProvider provider){
+        super(email,password,name,roles,provider);
     }
 
     public void addVehicle(Vehicle vehicle){

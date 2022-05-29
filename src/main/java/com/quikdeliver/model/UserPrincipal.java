@@ -1,4 +1,4 @@
-package com.quikdeliver.security;
+package com.quikdeliver.model;
 
 import com.quikdeliver.entity.User;
 import lombok.Getter;
@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -29,8 +29,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
 
     public static UserPrincipal create(User user) {
-        List<SimpleGrantedAuthority> authorities = Collections.
-                singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        List<SimpleGrantedAuthority> authorities = user.getRoles().stream().map(r->new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
 
         return new UserPrincipal(
                 user.getId(),
