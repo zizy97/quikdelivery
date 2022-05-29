@@ -12,6 +12,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 
+//Todo:Implement email sending templates
 @Service @RequiredArgsConstructor @Slf4j
 public class EmailSenderService {
     private final JavaMailSender javaMailSender;
@@ -23,7 +24,7 @@ public class EmailSenderService {
         message.setTo(toEmail);
         message.setText(body);
         message.setSubject(subject);
-        message.setFrom("johnmby9978@gmail.com");
+        message.setFrom("johnmby9978@gmail.com");//Todo:must add quikapp email and configs
 
         javaMailSender.send(message);
         log.info("Mail Send Successfully");
@@ -39,7 +40,7 @@ public class EmailSenderService {
         MimeMessageHelper mimeMessageHelper
                 = new MimeMessageHelper(mimeMessage, true);
 
-        mimeMessageHelper.setFrom("spring.email.from@gmail.com");
+        mimeMessageHelper.setFrom("johnmby9978@gmail.com");//Todo:must add quikapp email and configs
         mimeMessageHelper.setTo(toEmail);
         mimeMessageHelper.setText(body);
         mimeMessageHelper.setSubject(subject);
