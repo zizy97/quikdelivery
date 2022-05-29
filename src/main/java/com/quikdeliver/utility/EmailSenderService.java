@@ -1,4 +1,4 @@
-package com.quikdeliver.util;
+package com.quikdeliver.utility;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

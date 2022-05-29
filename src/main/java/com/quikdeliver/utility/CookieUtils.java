@@ -1,4 +1,4 @@
-package com.quikdeliver.util;
+package com.quikdeliver.utility;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.util.SerializationUtils;

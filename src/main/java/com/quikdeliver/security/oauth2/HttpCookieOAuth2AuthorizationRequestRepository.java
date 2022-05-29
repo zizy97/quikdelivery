@@ -2,7 +2,7 @@ package com.quikdeliver.security.oauth2;
 
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.quikdeliver.model.GoogleAuthRequest;
-import com.quikdeliver.util.CookieUtils;
+import com.quikdeliver.utility.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;

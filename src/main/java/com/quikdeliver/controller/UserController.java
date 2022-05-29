@@ -6,7 +6,7 @@ import com.quikdeliver.entity.Role;
 import com.quikdeliver.entity.User;
 import com.quikdeliver.model.TokensType;
 import com.quikdeliver.service.UserService;
-import com.quikdeliver.util.JWTHandler;
+import com.quikdeliver.utility.JWTHandler;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

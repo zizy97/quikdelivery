@@ -1,10 +1,9 @@
 package com.quikdeliver.security.oauth2;
 
 
-import com.quikdeliver.util.CookieUtils;
+import com.quikdeliver.utility.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;

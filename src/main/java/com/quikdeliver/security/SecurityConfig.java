@@ -7,10 +7,9 @@ import com.quikdeliver.security.oauth2.CustomOAuth2UserService;
 import com.quikdeliver.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.quikdeliver.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.quikdeliver.security.oauth2.OAuth2AuthenticationSuccessHandler;
-import com.quikdeliver.util.JWTHandler;
+import com.quikdeliver.utility.JWTHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -61,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .httpBasic().disable();
         http.authorizeRequests().antMatchers("/api/oauth2/**").permitAll();
-        http.authorizeRequests().antMatchers(GET,"/","/api/auth/token/refresh","/api/auth/whoami").permitAll();
+        http.authorizeRequests().antMatchers(GET,"/","/api/auth/token/refresh","/api/auth/whoami","/file").permitAll();
         http.authorizeRequests().antMatchers(POST,"/api/auth/signup").permitAll();
         http.authorizeRequests().antMatchers(GET,"/api/user/**").hasAnyAuthority("ROLE_USER", "ROLE_VO");
         http.authorizeRequests().antMatchers(POST,"/api/user/**").hasAnyAuthority("ROLE_ADMIN");

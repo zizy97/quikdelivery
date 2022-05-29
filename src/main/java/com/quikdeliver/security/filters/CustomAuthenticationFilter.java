@@ -3,7 +3,7 @@ package com.quikdeliver.security.filters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quikdeliver.entity.Role;
 import com.quikdeliver.model.TokensType;
-import com.quikdeliver.util.JWTHandler;
+import com.quikdeliver.utility.JWTHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;

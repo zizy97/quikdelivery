@@ -1,4 +1,4 @@
-package com.quikdeliver.util;
+package com.quikdeliver.utility;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
