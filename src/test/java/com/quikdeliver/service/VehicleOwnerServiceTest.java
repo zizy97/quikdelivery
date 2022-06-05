@@ -15,7 +15,7 @@ import java.util.Set;
 @SpringBootTest
 class VehicleOwnerServiceTest {
     @Autowired
-    VOServiceImpl VOServiceImpl;
+    com.quikdeliver.service.implimentations.VOServiceImpl VOServiceImpl;
     @Test
     void getAllVO() {
     }

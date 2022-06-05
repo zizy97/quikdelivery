@@ -2,6 +2,7 @@ package com.quikdeliver.controller;
 
 import com.quikdeliver.advice.exception.APIError;
 import com.quikdeliver.entity.Customer;
+import com.quikdeliver.entity.PackageDeliveryRequest;
 import com.quikdeliver.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,19 @@ public class CustomerController {
         }
     }
 
-    @PutMapping("/{id}/update")
+    @GetMapping("/{email}")
+    public ResponseEntity<?> getCustomerByEmail(@PathVariable String email) {
+        if(customerService.isCustomerExist(email)) {
+            log.info("Get customer by email");
+            return new ResponseEntity<>(customerService.getCustomer(email), HttpStatus.OK);
+        }else{
+            log.error("Customer not found");
+            return new ResponseEntity<>(
+                    new APIError().addCommonError("Email invalid or not found"),HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> updateCustomer(@RequestBody Customer customer, @PathVariable Long id) {
         if(customer.getId() == id) {
             if(customerService.isCustomerExist(id)) {
@@ -58,12 +71,25 @@ public class CustomerController {
         }
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/delete/{id}/")
     public ResponseEntity<?> deleteCustomer(@PathVariable Long id) {
         if(customerService.isCustomerExist(id)) {
             customerService.deleteCustomer(id);
             log.info("Customer deleted");
             return new ResponseEntity<>(HttpStatus.OK);
+        }else{
+            log.error("ID invalid or not found");
+            return new ResponseEntity<>(
+                    new APIError().addCommonError("ID invalid or not found"),HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    @PostMapping("/delivery-req/{id}")
+    public ResponseEntity<?> addRequest(@RequestBody PackageDeliveryRequest packageDeliveryRequest,Long id){
+        if(customerService.isCustomerExist(id)) {
+            PackageDeliveryRequest addedReq = customerService.addRequest(packageDeliveryRequest, id);
+            log.info("Customer deleted");
+            return new ResponseEntity<>(addedReq,HttpStatus.CREATED);
         }else{
             log.error("ID invalid or not found");
             return new ResponseEntity<>(

@@ -60,4 +60,6 @@ public class PackageDeliveryRequest {
 
     @Column(name = "status")
     private PackageDeliveryRequestStatus status;
+
+    private boolean isDeleted;
 }

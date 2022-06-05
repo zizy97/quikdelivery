@@ -1,10 +1,14 @@
-package com.quikdeliver.service;
+package com.quikdeliver.service.implimentations;
 
 import com.quikdeliver.entity.PackageDeliveryRequest;
 import com.quikdeliver.entity.Driver;
 import com.quikdeliver.entity.Vehicle;
 import com.quikdeliver.entity.VehicleOwner;
 import com.quikdeliver.repository.VORepository;
+import com.quikdeliver.service.DriverService;
+import com.quikdeliver.service.PDRService;
+import com.quikdeliver.service.VOService;
+import com.quikdeliver.service.VehicleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,11 +21,11 @@ import java.util.Set;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class VOServiceImpl implements VOService{
+public class VOServiceImpl implements VOService {
     private final VORepository voRepository;
     private final VehicleService vehicleService;
-    private final DeliverBookingService deliverBookingService;
     private final DriverService driverService;
+    private final PDRService pdrService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -105,17 +109,11 @@ public class VOServiceImpl implements VOService{
     }
 
     //PackageDeliveryRequest added service
-    @Transactional
-    public PackageDeliveryRequest assignDriver(Long deliverBookingId, Long driverId) {
-        PackageDeliveryRequest deliverBooking = deliverBookingService.getDeliverBooking(deliverBookingId);
-        Driver driverById = driverService.getDriver(driverId);
-        return deliverBookingService.updateDeliverBooking(deliverBooking);
+    public void assignDriver(Long deliverBookingId, Long driverId) {
+        pdrService.updateDriver(driverId,deliverBookingId);
     }
 
-    @Transactional
-    public PackageDeliveryRequest assignVehicle(Long deliverBookingId, Long vehicleId) {
-        PackageDeliveryRequest deliverBooking = deliverBookingService.getDeliverBooking(deliverBookingId);
-        Vehicle vehicleById = vehicleService.getVehicle(vehicleId);
-        return deliverBookingService.updateDeliverBooking(deliverBooking);
+    public void assignVehicle(Long deliverBookingId, Long vehicleId) {
+        pdrService.updateVehicle(vehicleId,deliverBookingId);
     }
 }

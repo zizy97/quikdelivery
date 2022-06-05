@@ -4,7 +4,7 @@ import com.quikdeliver.entity.Customer;
 import com.quikdeliver.entity.PackageDeliveryRequest;
 import com.quikdeliver.repository.CustomerRepository;
 import com.quikdeliver.service.CustomerService;
-import com.quikdeliver.service.DeliverBookingService;
+import com.quikdeliver.service.PDRService;
 import com.quikdeliver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,23 +13,16 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Service @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
 
     private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
-    private final DeliverBookingService deliverBookingService;
     private final UserService userService;
+    private final PDRService pdrService;
 
-    public PackageDeliveryRequest addDeliverBooking(PackageDeliveryRequest deliverBooking, Long id) {
-        customerRepository.findById(id).ifPresent(c -> {
-            c.addDeliverBooking(deliverBooking);
-            deliverBookingService.addDeliverBooking(deliverBooking);
-            customerRepository.save(c);
-        } );
-        return deliverBooking;
-    }
 
     @Override
     public Customer getCustomer(Long id) {
@@ -81,4 +74,15 @@ public class CustomerServiceImpl implements CustomerService {
             customerRepository.save(c);
         } );
     }
+
+    @Override
+    public PackageDeliveryRequest addRequest(PackageDeliveryRequest request,Long id) {
+        return pdrService.addRequest(request,id);
+    }
+
+    @Override
+    public Set<PackageDeliveryRequest> getRequests(Long customerId) {
+        return pdrService.getCustomerRequests(customerId);
+    }
+
 }

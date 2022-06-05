@@ -3,7 +3,6 @@ package com.quikdeliver.controller;
 import com.quikdeliver.advice.exception.APIError;
 import com.quikdeliver.entity.VehicleOwner;
 import com.quikdeliver.service.VOService;
-import com.quikdeliver.service.VOServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

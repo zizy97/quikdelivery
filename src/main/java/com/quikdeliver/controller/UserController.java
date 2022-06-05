@@ -49,15 +49,15 @@ public class UserController {
         return ResponseEntity.ok().body(userService.saveUser(user));
     }
 
-    @PostMapping("/role/addtouser")
+    @PostMapping("/role/adduser")
     public ResponseEntity<User> addRoleToUser(@RequestBody RoleToUserForm form) {
         userService.addRoleToUser(form.getEmail(),form.getRole());
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/whoami")
+    @GetMapping("/whoa-mi")
     public ResponseEntity<String> getUserByAuth(){
-        log.info("Whoami");
+        log.info("Whoa mi");
         String userEmail = jwtHandler.getUserEmail();
         return ResponseEntity.ok().body(userEmail);
     }

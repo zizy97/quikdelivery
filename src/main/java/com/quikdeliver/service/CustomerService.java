@@ -1,8 +1,10 @@
 package com.quikdeliver.service;
 
 import com.quikdeliver.entity.Customer;
+import com.quikdeliver.entity.PackageDeliveryRequest;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CustomerService {
     //Customer Read services
@@ -20,4 +22,9 @@ public interface CustomerService {
 
     //customer delete services
     public void deleteCustomer(Long id);
+
+    //add Deliver Request
+    public PackageDeliveryRequest addRequest(PackageDeliveryRequest request,Long id);
+
+    public Set<PackageDeliveryRequest> getRequests(Long customerId);
 }
