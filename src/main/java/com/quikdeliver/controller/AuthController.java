@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -59,5 +60,11 @@ public class AuthController {
                 return new ResponseEntity<>(new APIError().addCommonError("Invalid type or invalid URL."),HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(user,HttpStatus.CREATED);
+    }
+
+    @GetMapping("users")
+    public ResponseEntity<?> getAllUsers(){
+        List<User> allUsers = userService.getAllUsers();
+        return new ResponseEntity<>(allUsers,HttpStatus.OK);
     }
 }

@@ -3,6 +3,7 @@ package com.quikdeliver.controller;
 import com.quikdeliver.advice.exception.APIError;
 import com.quikdeliver.entity.Driver;
 import com.quikdeliver.service.DriverService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class DriverController {
         }
     }
 
-    @PutMapping("/{id}/update")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateDriver(@RequestBody Driver driver, @PathVariable Long id) {
         if(driver.getId() == id) {
             if(driverService.isDriverExist(id)) {
@@ -50,7 +51,7 @@ public class DriverController {
         }
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDriver(@PathVariable Long id) {
         if(driverService.isDriverExist(id)) {
             driverService.deleteDriver(id);
@@ -59,5 +60,16 @@ public class DriverController {
             return new ResponseEntity<>(
                     new APIError().addCommonError("ID invalid or not found"),HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/accept-req/{allocationId}")
+    public ResponseEntity<?> acceptRequest(@PathVariable Long allocationId){
+
+        return null;
+    }
+
+    @GetMapping("allocations")
+    public ResponseEntity<?> getAllAllocations(){
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

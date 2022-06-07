@@ -2,7 +2,7 @@ package com.quikdeliver.service.implimentations;
 
 import com.quikdeliver.entity.*;
 import com.quikdeliver.repository.CustomerRepository;
-import com.quikdeliver.repository.DeliverBookingRepository;
+import com.quikdeliver.repository.PDRRepository;
 import com.quikdeliver.repository.DriverRepository;
 import com.quikdeliver.repository.VehicleRepository;
 import com.quikdeliver.service.PDRService;
@@ -12,13 +12,14 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor @Slf4j
 @Service
 public class PDRServiceImpl implements PDRService {
 
-    private final DeliverBookingRepository deliverBookingRepository;
+    private final PDRRepository pdrRepository;
     private final CustomerRepository customerRepository;
     private final DriverRepository driverRepository;
     private final VehicleRepository vehicleRepository;
@@ -54,40 +55,50 @@ public class PDRServiceImpl implements PDRService {
     }
 
     @Override
-    public PackageDeliveryRequest addRequest(PackageDeliveryRequest request, Long customerId) {
-        Customer customer = customerRepository.findById(customerId).get();
+    public PackageDeliveryRequest addRequest(PackageDeliveryRequest request, Customer customer) {
+//        Customer customer = customerRepository.findById(customerId).get();
         request.setCustomer(customer);
-        return deliverBookingRepository.save(request);
+        return pdrRepository.save(request);
     }
 
     @Override
     public void updateRequest(PackageDeliveryRequest request) {
-        deliverBookingRepository.save(request);
+        pdrRepository.save(request);
     }
 
     @Override @Transactional
     public void deleteRequest(Long id) {
-        PackageDeliveryRequest packageDeliveryRequest = deliverBookingRepository.findById(id).get();
+        PackageDeliveryRequest packageDeliveryRequest = pdrRepository.findById(id).get();
         packageDeliveryRequest.setDeleted(true);
     }
 
     @Override @Transactional
     public void addAllocation(Allocation allocation,Long id) {
-        PackageDeliveryRequest packageDeliveryRequest = deliverBookingRepository.findById(id).get();
+        PackageDeliveryRequest packageDeliveryRequest = pdrRepository.findById(id).get();
         packageDeliveryRequest.setAllocation(allocation);
     }
 
     @Override
     public void updateDriver(Long driverId,Long reqId) {
         Driver driver = driverRepository.findById(driverId).get();
-        PackageDeliveryRequest packageDeliveryRequest = deliverBookingRepository.findById(reqId).get();
+        PackageDeliveryRequest packageDeliveryRequest = pdrRepository.findById(reqId).get();
         packageDeliveryRequest.getAllocation().setDriver(driver);
     }
 
     @Override
     public void updateVehicle(Long vehicleId,Long reqId) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId).get();
-        PackageDeliveryRequest packageDeliveryRequest = deliverBookingRepository.findById(reqId).get();
+        PackageDeliveryRequest packageDeliveryRequest = pdrRepository.findById(reqId).get();
         packageDeliveryRequest.getAllocation().setVehicle(vehicle);
+    }
+
+    @Override
+    public void deletePermanent() {
+        List<PackageDeliveryRequest> all = pdrRepository.findAll();
+        all.forEach(p->{
+            if(p.isDeleted()){
+                pdrRepository.delete(p);
+            }
+        });
     }
 }

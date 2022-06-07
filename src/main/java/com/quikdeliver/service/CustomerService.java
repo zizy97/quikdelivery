@@ -24,7 +24,7 @@ public interface CustomerService {
     public void deleteCustomer(Long id);
 
     //add Deliver Request
-    public PackageDeliveryRequest addRequest(PackageDeliveryRequest request,Long id);
+    public PackageDeliveryRequest addRequest(PackageDeliveryRequest request,Customer customer);
 
     public Set<PackageDeliveryRequest> getRequests(Long customerId);
 }

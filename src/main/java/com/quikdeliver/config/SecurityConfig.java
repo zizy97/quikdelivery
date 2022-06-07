@@ -23,6 +23,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -31,6 +32,7 @@ import static org.springframework.http.HttpMethod.POST;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true,jsr250Enabled = true)
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"http://localhost:3000"},maxAge = 3600,allowCredentials = "true")
 @Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 

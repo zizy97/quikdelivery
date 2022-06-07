@@ -1,10 +1,8 @@
 package com.quikdeliver.service.implimentations;
 
-import com.quikdeliver.entity.PackageDeliveryRequest;
-import com.quikdeliver.entity.Driver;
-import com.quikdeliver.entity.Vehicle;
-import com.quikdeliver.entity.VehicleOwner;
+import com.quikdeliver.entity.*;
 import com.quikdeliver.repository.VORepository;
+import com.quikdeliver.repository.VehicleRepository;
 import com.quikdeliver.service.DriverService;
 import com.quikdeliver.service.PDRService;
 import com.quikdeliver.service.VOService;
@@ -16,13 +14,13 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class VOServiceImpl implements VOService {
     private final VORepository voRepository;
+    private final VehicleRepository vehicleRepository;
     private final VehicleService vehicleService;
     private final DriverService driverService;
     private final PDRService pdrService;
@@ -77,43 +75,68 @@ public class VOServiceImpl implements VOService {
         } );
     }
 
+
     //Vehicle added service
-    @Transactional
-    public Vehicle addVehicleToVO(Long id, Vehicle vehicle) {
-        VehicleOwner vehicleOwner = voRepository.findById(id).get();
+    @Override @Transactional
+    public Vehicle addVehicleToVO(String email, Vehicle vehicle) {
+        VehicleOwner vehicleOwner = getVO(email);
         vehicleOwner.addVehicle(vehicle);
-        return vehicleService.addVehicle(vehicle);
+        Vehicle addedVehicle = vehicleService.addVehicle(vehicle);
+        return addedVehicle;
     }
 
-    public Set<Vehicle> getVehiclesByVO(Long id){
-        return voRepository.findById(id).get().getVehicles();
+    //get vehicle by user email
+    @Override @Transactional
+    public List<Vehicle> getVehiclesByVO(String email){
+        VehicleOwner vehicleOwner = voRepository.findByEmail(email).get();
+        List<Vehicle> vehicles = vehicleOwner.getVehicles();
+        return vehicles;
     }
 
+    //get vehicle by user id from vehicle repo
+    @Override
+    public List<Vehicle> getVehiclesByVO(Long id){
+        return vehicleService.getVehicles(id);
+    }
+
+    @Override
     public Vehicle getVehicleByVO(Long id, Long vehicleId){
         return vehicleService.getVehicle(id,vehicleId);
     }
 
+    @Override
     public void updateVehicle(Vehicle vehicle, Long voId, Long vehicleId) {
         vehicleService.updateVehicle(voId,vehicleId,vehicle);
     }
+
+    @Override
     public void deleteVehicle(Long voId, Long vehicleId) {
         vehicleService.deleteVehicle(voId,vehicleId);
     }
 
     //Driver added service
-
-    public Driver addDriverToVO(Long id, Driver driver) {
-        VehicleOwner vehicleOwner = voRepository.findById(id).get();
+    public Driver addDriverToVO(String email, Driver driver) {
+        VehicleOwner vehicleOwner = voRepository.findByEmail(email).get();
         vehicleOwner.addDriver(driver);
         return driverService.saveDriver(driver);
     }
 
     //PackageDeliveryRequest added service
-    public void assignDriver(Long deliverBookingId, Long driverId) {
-        pdrService.updateDriver(driverId,deliverBookingId);
+    @Override
+    public void assignAllocation(Long pdrId, Long vehicleId, Long driverId) {
+        Allocation allocation=new Allocation();
+        Vehicle vehicle = vehicleService.getVehicle(vehicleId);
+        Driver driver = driverService.getDriver(driverId);
+        allocation.setVehicle(vehicle);
+        allocation.setDriver(driver);
+        pdrService.addAllocation(allocation,pdrId);
     }
 
-    public void assignVehicle(Long deliverBookingId, Long vehicleId) {
-        pdrService.updateVehicle(vehicleId,deliverBookingId);
+    public void assignDriver(Long pdrId, Long driverId) {
+        pdrService.updateDriver(driverId,pdrId);
+    }
+
+    public void assignVehicle(Long pdrId, Long vehicleId) {
+        pdrService.updateVehicle(vehicleId,pdrId);
     }
 }

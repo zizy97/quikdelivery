@@ -34,6 +34,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         log.info("in the attemptAuthentication");
+        log.info("email -"+request.getParameter("email")+" adn password"+request.getParameter("password"));
         if(request.getParameter("email") != null && request.getParameter("password") != null) {
             String email = request.getParameter("email");
             String password = request.getParameter("password");
@@ -47,11 +48,13 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         jwtHandler.errorView(response,failed);
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         log.info("in the successfulAuthentication");
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
         List<Role> roles = user.getAuthorities().stream().map(g -> new Role(g.getAuthority())).collect(Collectors.toList());

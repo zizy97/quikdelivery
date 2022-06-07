@@ -8,10 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -24,10 +21,12 @@ import java.util.Set;
 public class VehicleOwner extends User {
 
     @OneToMany(mappedBy="vehicleOwner",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
-    private Set<Vehicle> vehicles=new HashSet<>();
+    @JsonIgnore
+    private List<Vehicle> vehicles=new ArrayList<>();
 
     @OneToMany(mappedBy="vehicleOwner",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
-    private Set<Driver> driver=new HashSet<>();
+    @JsonIgnore
+    private List<Driver> driver=new ArrayList<>();
 
     @Column(columnDefinition = "boolean default false")
     private boolean isVerified;

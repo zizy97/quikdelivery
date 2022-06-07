@@ -14,7 +14,7 @@ public interface PDRService {
     public Set<PackageDeliveryRequest> getVehicleRequests(Long vehicleId);
 
     //Add Delivery Requests
-    public PackageDeliveryRequest addRequest(PackageDeliveryRequest request, Long customerId);
+    public PackageDeliveryRequest addRequest(PackageDeliveryRequest request, Customer customer);
 
     //Update Delivery Requests
     public void updateRequest(PackageDeliveryRequest request);
@@ -31,4 +31,7 @@ public interface PDRService {
 
     //Update Vehicle
     public void updateVehicle(Long vehicleId,Long reqId);
+
+    //Delete Permanent
+    public void deletePermanent();
 }

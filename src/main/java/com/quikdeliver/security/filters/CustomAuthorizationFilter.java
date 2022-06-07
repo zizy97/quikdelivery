@@ -26,6 +26,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter{
         if(request.getRequestURI().equals("/api/auth/login") || request.getRequestURI().equals("/api/auth/token/refresh")|| request.getRequestURI().equals("/api/auth/whoami") || request.getRequestURI().equals("/api/auth/signup")|| request.getRequestURI().equals("/file")){
             filterChain.doFilter(request, response);
         }else{
+            log.info("JWT Verifying");
             String token = jwtHandler.getToken();
             if(token != null){
                 try {

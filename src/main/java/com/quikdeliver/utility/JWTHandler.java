@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.quikdeliver.advice.exception.ForbiddenAccess;
 import com.quikdeliver.config.JWTConfig;
 import com.quikdeliver.entity.Role;
 import com.quikdeliver.model.TokensType;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Component @Slf4j
@@ -114,7 +116,11 @@ public class JWTHandler {
     public void errorView(HttpServletResponse response, Exception e) throws IOException {
         log.error("Error logging in: {}", e.getMessage());
         response.setHeader("error", e.getMessage());
-        response.setStatus(FORBIDDEN.value());
+        if(e.getMessage().startsWith("The Token has expired")){
+            response.setStatus(UNAUTHORIZED.value());
+        }else{
+            response.setStatus(FORBIDDEN.value());
+        }
         Map<String,String> error = new HashMap<>();
         error.put("error", e.getMessage());
         response.setContentType(APPLICATION_JSON_VALUE);

@@ -1,6 +1,8 @@
 package com.quikdeliver.service.implimentations;
 
+import com.quikdeliver.entity.Allocation;
 import com.quikdeliver.entity.Driver;
+import com.quikdeliver.repository.AllocationRepository;
 import com.quikdeliver.repository.DriverRepository;
 import com.quikdeliver.service.DriverService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ public class DriverServiceImpl  implements DriverService {
 
     private final PasswordEncoder passwordEncoder;
     private final DriverRepository driverRepository;
+    private final AllocationRepository allocationRepository;
 
     @Override
     public Driver getDriver(Long id) {
@@ -64,5 +67,18 @@ public class DriverServiceImpl  implements DriverService {
         driverRepository.findById(id).ifPresent(c -> {
             c.setDeleted(true);
         } );
+    }
+
+    @Override @Transactional
+    public List<Allocation> getAllocation(String email) {
+        Driver driver = getDriver(email);
+        return driver.getAllocations();
+    }
+
+    @Override
+    public void acceptAllocation(Driver driver,Long allocationId) {
+        driver.getAllocations().stream().map(Allocation::getPackageDeliveryRequest).forEach(p->{
+
+        });
     }
 }

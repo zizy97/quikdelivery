@@ -1,6 +1,8 @@
 package com.quikdeliver.service;
 
+import com.quikdeliver.entity.Allocation;
 import com.quikdeliver.entity.Driver;
+import com.quikdeliver.entity.PackageDeliveryRequest;
 
 import java.util.List;
 
@@ -20,4 +22,8 @@ public interface DriverService {
 
     //customer delete services
     public void deleteDriver(Long id);
+
+//    public List<Allocation> getAllocations(Driver driver);
+    public List<Allocation> getAllocation(String email);
+    public void acceptAllocation(Driver driver,Long allocationId);
 }

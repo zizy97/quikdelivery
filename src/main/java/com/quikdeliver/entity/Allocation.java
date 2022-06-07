@@ -28,6 +28,9 @@ public class Allocation{
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean isAccepted;
+
     private PackageDeliveryRequestStatus status;
 
     @Column(name = "delivery_date")

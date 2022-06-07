@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +37,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+        List<Customer> customerList = new ArrayList<>();
+        customerRepository.findAll().forEach(customer -> {
+            if(!customer.isDeleted())
+                customerList.add(customer);
+        });
+        return customerList;
     }
 
     @Override
@@ -71,13 +77,14 @@ public class CustomerServiceImpl implements CustomerService {
     public void deleteCustomer(Long id) {
         customerRepository.findById(id).ifPresent(c -> {
             c.setDeleted(true);
+//            c.getDeliverBookings().forEach(p->p.setDeleted(true));
             customerRepository.save(c);
         } );
     }
 
     @Override
-    public PackageDeliveryRequest addRequest(PackageDeliveryRequest request,Long id) {
-        return pdrService.addRequest(request,id);
+    public PackageDeliveryRequest addRequest(PackageDeliveryRequest request,Customer customer) {
+        return pdrService.addRequest(request,customer);
     }
 
     @Override

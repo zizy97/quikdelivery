@@ -46,7 +46,7 @@ class VehicleOwnerServiceTest {
         Vehicle v = new Vehicle();
         v.setType(VehicleType.TWO_TON_VAN);
         v.setModel("Audi");
-        VOServiceImpl.addVehicleToVO(1L,v);
+//        VOServiceImpl.addVehicleToVO(1L,v);
     }
 
     @Test
@@ -66,7 +66,7 @@ class VehicleOwnerServiceTest {
     @Test
     @Transactional
     void getVehiclesByVO() {
-        Set<Vehicle> vehiclesByVO = VOServiceImpl.getVehiclesByVO(1L);
+//        Set<Vehicle> vehiclesByVO = VOServiceImpl.getVehiclesByVO(1L);
         //vehiclesByVO.stream().map(v->v.getVehicleMake()).forEach(System.out::println);
 
     }
@@ -82,7 +82,7 @@ class VehicleOwnerServiceTest {
         driver.setNic("Supun");
         driver.setPassword("123");
         driver.setEmail("abc@gmail.com");
-        VOServiceImpl.addDriverToVO(1L,driver);
+//        VOServiceImpl.addDriverToVO(1L,driver);
     }
 
     @Test

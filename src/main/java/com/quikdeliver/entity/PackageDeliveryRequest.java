@@ -54,6 +54,11 @@ public class PackageDeliveryRequest {
     @Column(name = "allocated")
     private boolean allocated;
 
+    public void setAllocation(Allocation allocation) {
+        allocation.setPackageDeliveryRequest(this);
+        this.allocation = allocation;
+    }
+
     @OneToOne(mappedBy = "packageDeliveryRequest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonBackReference
     private Allocation allocation;
@@ -61,5 +66,6 @@ public class PackageDeliveryRequest {
     @Column(name = "status")
     private PackageDeliveryRequestStatus status;
 
+    @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
 }
