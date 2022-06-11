@@ -23,12 +23,10 @@ public class JWTConfig {
         return secretKey.getBytes();
     }
 
-    @Bean
     public Date getAccessTokenValidityDate() {
         return new Date(System.currentTimeMillis() + this.accessTokenValidityInHours*60*60*1000);
     }
-
-    @Bean
+        
     public Date getRefreshTokenValidityDate() {
         return new Date(System.currentTimeMillis() + this.refreshTokenValidityInDays*24*60*60*1000);
     }

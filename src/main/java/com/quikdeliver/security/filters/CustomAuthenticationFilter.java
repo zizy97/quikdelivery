@@ -48,13 +48,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         jwtHandler.errorView(response,failed);
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         log.info("in the successfulAuthentication");
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
         List<Role> roles = user.getAuthorities().stream().map(g -> new Role(g.getAuthority())).collect(Collectors.toList());

@@ -48,6 +48,7 @@ public class User {
     @Column(nullable = false)
     private String name;
 
+    @Column(unique = true,updatable = false)
     private String email;
 
     private String imageUrl;

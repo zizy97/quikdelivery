@@ -58,18 +58,16 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
 
-        String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-//        String targetUrl = "http://localhost:3000/oauth2/redirect";
+//        String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
+        String targetUrl = "http://localhost:3000/signin";
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-//        List<Role> roles = userPrincipal.getAuthorities().stream().map(g -> new Role(g.getAuthority())).collect(Collectors.toList());
-        List<Role> roles = authRequest.getUser().getRoles().stream().map(role -> new Role(role.getName())).collect(Collectors.toList());
-        Map<String,String> tokens= jwtHandler.buildNewToken(TokensType.BOTH,userPrincipal.getUsername(),request.getRequestURL().toString(),roles);
+        log.info("user-"+userPrincipal.getUsername());
+        List<Role> roles = userPrincipal.getAuthorities().stream().map(g -> new Role(g.getAuthority())).collect(Collectors.toList());
+        Map<String,String> tokens= jwtHandler.buildNewToken(TokensType.ACCESS,userPrincipal.getUsername(),request.getRequestURL().toString(),roles);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("access", tokens.get("access"))
-                .queryParam("refresh",tokens.get("refresh"))
-                .queryParam("userId",userPrincipal.getUsername())
                 .build().toUriString();
     }
 

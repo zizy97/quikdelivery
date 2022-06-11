@@ -62,8 +62,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }else if(!authRequest.getReqType().equals("login") && !userOptional.isPresent()){
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
         }else{
-            log.error("Invalid req arguments for google oauth request");
-            throw new OAuth2AuthenticationProcessingException("Invalid req arguments for google oauth request");
+            log.error("You are not registered user please signup first");
+            throw new OAuth2AuthenticationProcessingException("You are not registered user please signup first");
         }
 
         return UserPrincipal.create(user, oAuth2User.getAttributes());
