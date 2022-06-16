@@ -1,1 +1,1 @@
-web:java -jar quikapp-backend.jar --server.port=$PORT
+web:docker run -p 8081:$PORT --name quikapp-backend  -d quikapp-backend
