@@ -27,7 +27,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
 //                .map(Cookie::getValue)
 //                .orElse(("/"));
 
-        String targetUrl = "http://localhost:3000/signin";
+        String targetUrl = "https://quikdeliver.herokuapp.com/signin";
 
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("error", exception.getMessage())
