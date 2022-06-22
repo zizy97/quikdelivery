@@ -1,1 +1,1 @@
-web:java -jar /target/quikapp-backend.jar --port=$PORT
+web:java -jar quikapp-backend.jar --server.port=$PORT
