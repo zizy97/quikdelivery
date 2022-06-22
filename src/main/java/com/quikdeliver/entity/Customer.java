@@ -2,8 +2,6 @@ package com.quikdeliver.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quikdeliver.model.AuthProvider;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
