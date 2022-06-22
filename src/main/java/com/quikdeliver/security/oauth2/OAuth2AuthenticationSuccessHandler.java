@@ -59,7 +59,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
 
 //        String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-        String targetUrl = "http://localhost:3000/signin";
+        String targetUrl = "https://quikdeliver.herokuapp.com/signin";
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         log.info("user-"+userPrincipal.getUsername());
