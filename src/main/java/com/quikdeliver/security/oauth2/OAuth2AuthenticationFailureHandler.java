@@ -31,7 +31,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
 //                .map(Cookie::getValue)
 //                .orElse(("/"));
 
-        targetUrl = UriComponentsBuilder.fromUriString(targetUrl + "signin")
+        targetUrl = UriComponentsBuilder.fromUriString(targetUrl + "/signin")
                 .queryParam("error", exception.getMessage())
                 .build().toUriString();
 

@@ -67,7 +67,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         List<Role> roles = userPrincipal.getAuthorities().stream().map(g -> new Role(g.getAuthority())).collect(Collectors.toList());
         Map<String,String> tokens= jwtHandler.buildNewToken(TokensType.ACCESS,userPrincipal.getUsername(),request.getRequestURL().toString(),roles);
 
-        return UriComponentsBuilder.fromUriString(targetUrl + "signin")
+        return UriComponentsBuilder.fromUriString(targetUrl + "/signin")
                 .queryParam("access", tokens.get("access"))
                 .build().toUriString();
     }
