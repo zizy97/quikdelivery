@@ -7,14 +7,12 @@ import com.quikdeliver.model.UserPrincipal;
 import com.quikdeliver.utility.JWTHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -28,13 +26,10 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Slf4j @RequiredArgsConstructor @CrossOrigin(origins = {"https://quikdeliver.herokuapp.com"},maxAge = 3600,allowCredentials = "true")
+@Slf4j @RequiredArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JWTHandler jwtHandler;
-
-    @Value("${app.frontend.url}")
-    private String targetUrl;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -54,7 +49,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         jwtHandler.errorView(response,failed);
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
     }
 
     @Override
@@ -76,7 +70,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         out.put("refresh",new String(tokens.get("refresh")));
         out.put("roles",userRoles);
         response.setContentType(APPLICATION_JSON_VALUE); // Content type
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         new ObjectMapper().writeValue(response.getOutputStream(),out);
     }
 }

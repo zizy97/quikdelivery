@@ -4,7 +4,6 @@ package com.quikdeliver.security.oauth2;
 import com.quikdeliver.utility.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -20,9 +19,6 @@ import static com.quikdeliver.security.oauth2.HttpCookieOAuth2AuthorizationReque
 @Component @RequiredArgsConstructor @Slf4j
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    @Value("${app.frontend.url}")
-    private String targetUrl;
-
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Override
@@ -31,7 +27,9 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
 //                .map(Cookie::getValue)
 //                .orElse(("/"));
 
-        targetUrl = UriComponentsBuilder.fromUriString(targetUrl + "/signin")
+        String targetUrl = "https://quikdeliver.herokuapp.com/signin";
+
+        targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("error", exception.getMessage())
                 .build().toUriString();
 

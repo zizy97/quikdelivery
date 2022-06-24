@@ -10,7 +10,6 @@ import com.quikdeliver.utility.CookieUtils;
 import com.quikdeliver.utility.JWTHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -30,9 +29,6 @@ import static com.quikdeliver.security.oauth2.HttpCookieOAuth2AuthorizationReque
 
 @Component @Slf4j @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    @Value("${app.frontend.url}")
-    private String targetUrl;
-
     private final JWTHandler jwtHandler;
     private final AppProperties appProperties;
     private final GoogleAuthRequest authRequest;
@@ -62,12 +58,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
 
+//        String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
+        String targetUrl = "https://quikdeliver.herokuapp.com/signin";
+
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         log.info("user-"+userPrincipal.getUsername());
         List<Role> roles = userPrincipal.getAuthorities().stream().map(g -> new Role(g.getAuthority())).collect(Collectors.toList());
         Map<String,String> tokens= jwtHandler.buildNewToken(TokensType.ACCESS,userPrincipal.getUsername(),request.getRequestURL().toString(),roles);
 
-        return UriComponentsBuilder.fromUriString(targetUrl + "/signin")
+        return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("access", tokens.get("access"))
                 .build().toUriString();
     }
