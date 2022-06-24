@@ -53,7 +53,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         jwtHandler.errorView(response,failed);
-        response.setHeader("Access-Control-Allow-Origin",targetUrl);
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
     }
 
     @Override
@@ -75,7 +75,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         out.put("refresh",new String(tokens.get("refresh")));
         out.put("roles",userRoles);
         response.setContentType(APPLICATION_JSON_VALUE); // Content type
-        response.setHeader("Access-Control-Allow-Origin",targetUrl);
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         new ObjectMapper().writeValue(response.getOutputStream(),out);
     }
 }
