@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = {"http://localhost:3000"},maxAge = 3600,allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000","https://quikdeliver.herokuapp.com/"},maxAge = 3600,allowCredentials = "true")
 @RequiredArgsConstructor
 public class AuthController {
     private final CustomerService customerService;

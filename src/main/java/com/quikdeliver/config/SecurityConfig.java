@@ -35,7 +35,7 @@ import static org.springframework.http.HttpMethod.POST;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true,jsr250Enabled = true)
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:3000"},maxAge = 3600,allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000","https://quikdeliver.herokuapp.com/"},maxAge = 3600,allowCredentials = "true")
 @Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 

@@ -27,7 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("api/auth")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = {"http://localhost:3000"},maxAge = 3600,allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000","https://quikdeliver.herokuapp.com/"},maxAge = 3600,allowCredentials = "true")
 public class UserController {
     private final UserService userService;
     private final JWTHandler jwtHandler;
