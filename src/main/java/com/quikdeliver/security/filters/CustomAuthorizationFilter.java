@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Slf4j @RequiredArgsConstructor
+@Slf4j @RequiredArgsConstructor @CrossOrigin(origins = {"https://quikdeliver.herokuapp.com"},maxAge = 3600,allowCredentials = "true")
 public class CustomAuthorizationFilter extends OncePerRequestFilter{
     private final JWTHandler jwtHandler;
     @Override
