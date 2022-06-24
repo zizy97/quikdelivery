@@ -7,6 +7,7 @@ import com.quikdeliver.model.UserPrincipal;
 import com.quikdeliver.utility.JWTHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,6 +32,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private final AuthenticationManager authenticationManager;
     private final JWTHandler jwtHandler;
 
+    @Value("${app.frontend.url}")
+    private String targetUrl;
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         log.info("in the attemptAuthentication");
@@ -49,6 +53,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         jwtHandler.errorView(response,failed);
+        response.setHeader("Access-Control-Allow-Origin",targetUrl);
     }
 
     @Override
@@ -70,6 +75,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         out.put("refresh",new String(tokens.get("refresh")));
         out.put("roles",userRoles);
         response.setContentType(APPLICATION_JSON_VALUE); // Content type
+        response.setHeader("Access-Control-Allow-Origin",targetUrl);
         new ObjectMapper().writeValue(response.getOutputStream(),out);
     }
 }
